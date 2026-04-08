@@ -57,7 +57,7 @@ npx airules sync
 Or install globally:
 
 ```bash
-npm install -g airules
+npm install -g @tangvu/airules
 ```
 
 ## 🛠️ Supported Tools
@@ -104,7 +104,12 @@ custom:
 
 Then run `airules sync` to regenerate all files.
 
-[Full configuration reference →](docs/configuration.md)
+## 📚 Documentation
+
+- [Getting Started](docs/getting-started.md)
+- [Configuration Reference](docs/configuration.md)
+- [Supported Tools](docs/supported-tools.md)
+- [Contributing Guide](CONTRIBUTING.md)
 
 ## 🏆 Score Card
 

@@ -1,6 +1,6 @@
 {
   "name": "@tangvu/airules",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "One config to rule them all. Generate & sync AI coding rules across every tool.",
   "type": "module",
   "bin": {

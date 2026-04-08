@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0] - 2026-04-08
+## [1.1.0] - 2026-04-08
+
+### Added
+- **9 new AI tool generators**: Qwen Code, Gemini CLI, Augment Code, CodeBuddy, OpenCode, Roo Code, KiloCode, Bolt.new
+- Total supported tools: **16 AI coding assistants**
+
+[Unreleased]: https://github.com/tang-vu/airules/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/tang-vu/airules/releases/tag/v1.1.0
+[1.0.0]: https://github.com/tang-vu/airules/releases/tag/v1.0.0
 
 ### Added
 - **ASCII banner** displayed on first run

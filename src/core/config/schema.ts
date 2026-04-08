@@ -12,7 +12,25 @@ export const airulesConfigSchema = z.object({
     })
     .default({}),
   targets: z
-    .array(z.enum(["claude", "cursor", "copilot", "windsurf", "cline", "codex", "aider"]))
+    .array(
+      z.enum([
+        "claude",
+        "cursor",
+        "copilot",
+        "windsurf",
+        "cline",
+        "codex",
+        "aider",
+        "qwen",
+        "gemini",
+        "augment",
+        "codebuddy",
+        "opencode",
+        "roo",
+        "kilocode",
+        "bolt",
+      ]),
+    )
     .default(["claude", "cursor", "copilot"]),
   rules: z
     .object({

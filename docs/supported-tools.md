@@ -2,6 +2,8 @@
 
 airules generates AI coding rules for the following tools:
 
+## Core Tools
+
 | Tool | Output File | Status |
 |------|------------|--------|
 | [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview) | `CLAUDE.md` | ✅ |
@@ -12,41 +14,39 @@ airules generates AI coding rules for the following tools:
 | [OpenAI Codex](https://platform.openai.com/docs/guides/codex) | `AGENTS.md` | ✅ |
 | [Aider](https://aider.chat/) | `.aider.conf.yml` | 🔜 |
 
-## Tool-Specific Formats
+## New Tools
 
-### Claude Code (`CLAUDE.md`)
+| Tool | Output File | Status |
+|------|------------|--------|
+| [Qwen Code](https://qwenlm.github.io/) | `.qwenrules` | ✅ |
+| [Gemini CLI](https://ai.google.dev/gemini-api) | `.gemini/rules.md` | ✅ |
+| [Augment Code](https://augment.dev/) | `.augment/rules.md` | ✅ |
+| [CodeBuddy](https://www.codebuddy.ai/) | `.codebuddy/rules.md` | ✅ |
+| [OpenCode](https://github.com/opencode-ai/opencode) | `AGENTS.md` | ✅ |
+| [Roo Code](https://roocode.com/) | `.roo/rules.md` | ✅ |
+| [KiloCode](https://kilocode.ai/) | `.kilocode/rules.md` | ✅ |
+| [Bolt.new](https://bolt.new/) | `.bolt/rules.md` | ✅ |
 
-Markdown format with structured sections. Claude Code understands Markdown best and leverages headings, lists, and code blocks for context.
+## Usage
 
-**Sections generated:**
-- Project Overview
-- Tech Stack
-- Code Style
-- Architecture
-- Testing
-- Git Conventions
-- Security
-- Custom Rules
+```bash
+# Generate for all tools
+npx @tangvu/airules init
 
-### Cursor (`.cursorrules`)
+# Generate for specific tool
+npx @tangvu/airules init --target qwen
+npx @tangvu/airules sync --target gemini
+```
 
-Plain text rules optimized for Cursor's context window. Each rule on its own line or paragraph.
-
-### GitHub Copilot (`.github/copilot-instructions.md`)
-
-Markdown instructions focused on code completion context. Includes project overview, style guidelines, and architecture patterns.
-
-### Windsurf (`.windsurfrules`)
-
-Concise rules format optimized for Windsurf's processing.
-
-### Cline (`.clinerules`)
-
-Simple rules format for Cline agent.
-
-### OpenAI Codex (`AGENTS.md`)
-
-Agent instructions format for OpenAI's Codex CLI.
+```yaml
+# .airules.yml
+targets:
+  - claude
+  - cursor
+  - qwen
+  - gemini
+  - augment
+```
 
 ## Adding New Tools
 

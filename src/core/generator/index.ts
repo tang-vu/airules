@@ -1,13 +1,21 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import type { AirulesConfig } from "../config/schema.js";
 import type { ProjectProfile } from "../detector/types.js";
+import { AugmentGenerator } from "./augment.js";
 import type { BaseGenerator } from "./base.js";
+import { BoltGenerator } from "./bolt.js";
 import { ClaudeGenerator } from "./claude.js";
 import { ClineGenerator } from "./cline.js";
+import { CodebuddyGenerator } from "./codebuddy.js";
 import { CodexGenerator } from "./codex.js";
 import { CopilotGenerator } from "./copilot.js";
 import { CursorGenerator } from "./cursor.js";
+import { GeminiGenerator } from "./gemini.js";
+import { KiloCodeGenerator } from "./kilocode.js";
+import { OpenCodeGenerator } from "./opencode.js";
+import { QwenGenerator } from "./qwen.js";
+import { RooGenerator } from "./roo.js";
 import { WindsurfGenerator } from "./windsurf.js";
 
 const generatorMap: Record<string, () => BaseGenerator> = {
@@ -17,6 +25,14 @@ const generatorMap: Record<string, () => BaseGenerator> = {
   windsurf: () => new WindsurfGenerator(),
   cline: () => new ClineGenerator(),
   codex: () => new CodexGenerator(),
+  qwen: () => new QwenGenerator(),
+  gemini: () => new GeminiGenerator(),
+  augment: () => new AugmentGenerator(),
+  codebuddy: () => new CodebuddyGenerator(),
+  opencode: () => new OpenCodeGenerator(),
+  roo: () => new RooGenerator(),
+  kilocode: () => new KiloCodeGenerator(),
+  bolt: () => new BoltGenerator(),
 };
 
 export interface GeneratedFile {
@@ -44,7 +60,6 @@ export function generateAll(
     const content = generator.generate(profile, config);
     const outputPath = join(cwd, generator.outputPath);
 
-    // Check if file exists and skip if not forced
     if (!force && existsSync(outputPath)) {
       const existing = readFileSync(outputPath, "utf-8");
       if (existing === content) continue;
@@ -52,9 +67,7 @@ export function generateAll(
 
     if (!dryRun) {
       const dir = dirname(outputPath);
-      if (!existsSync(dir)) {
-        mkdirSync(dir, { recursive: true });
-      }
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(outputPath, content, "utf-8");
     }
 

@@ -6,10 +6,10 @@
 
 Generate & sync AI coding rules across Claude Code, Cursor, GitHub Copilot, Windsurf, Cline, and Codex — from a single source of truth.
 
-[![npm version](https://img.shields.io/npm/v/airules?color=%23007acc)](https://www.npmjs.com/package/airules)
+[![npm version](https://img.shields.io/npm/v/@tangvu/airules?color=%23007acc)](https://www.npmjs.com/package/@tangvu/airules)
 [![CI](https://github.com/tang-vu/airules/actions/workflows/ci.yml/badge.svg)](https://github.com/tang-vu/airules/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Downloads](https://img.shields.io/npm/dm/airules)](https://www.npmjs.com/package/airules)
+[![Downloads](https://img.shields.io/npm/dm/@tangvu/airules)](https://www.npmjs.com/package/@tangvu/airules)
 
 [Getting Started](#-getting-started) · [Configuration](#%EF%B8%8F-configuration) · [Supported Tools](#-supported-tools) · [Score Card](#-score-card)
 

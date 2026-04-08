@@ -61,7 +61,9 @@ export const scoringCriteria: ScoreCriteria[] = [
 export function calculateOverallScore(scores: number[], weights: number[]): number {
   let total = 0;
   for (let i = 0; i < scores.length; i++) {
-    total += scores[i] * (weights[i] ?? 0);
+    const score = scores[i] ?? 0;
+    const weight = weights[i] ?? 0;
+    total += score * weight;
   }
   return Math.round(total);
 }

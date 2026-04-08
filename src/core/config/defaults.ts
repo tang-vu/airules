@@ -38,8 +38,13 @@ export function getDefaultConfig(profile: ProjectProfile): AirulesConfig {
       },
       security: {
         no_secrets_in_code: true,
+        sanitize_inputs: false,
+        prefer_parameterized_queries: false,
       },
-      performance: {},
+      performance: {
+        lazy_load_images: false,
+        prefer_server_components: false,
+      },
     },
     custom: [],
     exclude: ["node_modules", "dist", "coverage"],

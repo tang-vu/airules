@@ -1,6 +1,7 @@
 import ora, { type Ora } from "ora";
 
-const noColor = Boolean(process.env.NO_COLOR);
+// biome-ignore lint/complexity/useLiteralKeys: TypeScript strict mode requires bracket notation for index signatures
+const noColor = Boolean(process.env["NO_COLOR"]);
 
 export function createSpinner(text: string): Ora {
   const spinner = ora({

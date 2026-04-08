@@ -74,7 +74,8 @@ export function detectStack(cwd: string, dependencies: Record<string, string>): 
   for (const [file, detection] of Object.entries(frameworkMarkers)) {
     if (existsSync(join(cwd, file))) {
       // Special case: vite.config.* needs react dependency for react-vite
-      if (file.startsWith("vite.config.") && dependencies.react) {
+      // biome-ignore lint/complexity/useLiteralKeys: TypeScript strict mode requires bracket notation for index signatures
+      if (file.startsWith("vite.config.") && dependencies["react"]) {
         return { language: detection.language, framework: "react-vite" };
       }
       // For language-only markers, check dependency-based frameworks first

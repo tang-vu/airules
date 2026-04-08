@@ -49,7 +49,7 @@ export async function syncCommand(options: SyncOptions): Promise<void> {
         name: config.project.name,
         language: (config.project.language as never) || "other",
         framework: (config.project.stack as never) || null,
-        packageManager: "npm",
+        packageManager: "npm" as const,
         hasTypeScript: config.project.language === "typescript",
         hasTesting: false,
         testingFramework: null,

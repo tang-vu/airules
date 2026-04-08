@@ -35,10 +35,12 @@ export async function detectProject(cwd: string): Promise<ProjectProfile> {
   if (framework === "nextjs" && structure.keyDirectories.includes("app")) {
     detectedPatterns.push("app-router");
   }
-  if (allDependencies.prisma || allDependencies["@prisma/client"]) {
+  // biome-ignore lint/complexity/useLiteralKeys: TypeScript strict mode requires bracket notation for index signatures
+  if (allDependencies["prisma"] || allDependencies["@prisma/client"]) {
     detectedPatterns.push("prisma-orm");
   }
-  if (allDependencies.drizzle || allDependencies["drizzle-orm"]) {
+  // biome-ignore lint/complexity/useLiteralKeys: TypeScript strict mode requires bracket notation for index signatures
+  if (allDependencies["drizzle"] || allDependencies["drizzle-orm"]) {
     detectedPatterns.push("drizzle-orm");
   }
   detectedPatterns.push(...gitInfo.recentCommitPatterns);

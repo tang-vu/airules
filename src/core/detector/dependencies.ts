@@ -71,8 +71,10 @@ export function parsePackageJson(cwd: string): ParsedDependencies {
   try {
     const content = readFileSync(packageJsonPath, "utf-8");
     const parsed = JSON.parse(content) as Record<string, unknown>;
-    const deps = (parsed.dependencies ?? {}) as Record<string, string>;
-    const devDeps = (parsed.devDependencies ?? {}) as Record<string, string>;
+    // biome-ignore lint/complexity/useLiteralKeys: TypeScript strict mode requires bracket notation for index signatures
+    const deps = (parsed["dependencies"] ?? {}) as Record<string, string>;
+    // biome-ignore lint/complexity/useLiteralKeys: TypeScript strict mode requires bracket notation for index signatures
+    const devDeps = (parsed["devDependencies"] ?? {}) as Record<string, string>;
 
     return {
       dependencies: deps,
@@ -98,7 +100,8 @@ export function detectPatterns(
   };
 
   return {
-    hasTypeScript: Boolean(allDependencies.typescript),
+    // biome-ignore lint/complexity/useLiteralKeys: TypeScript strict mode requires bracket notation for index signatures
+    hasTypeScript: Boolean(allDependencies["typescript"]),
     hasTesting: detect(testingFrameworks) !== null,
     testingFramework: detect(testingFrameworks),
     hasLinter: detect(linters) !== null,

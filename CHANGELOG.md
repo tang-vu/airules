@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-04-08
+
+### Added
+- **ASCII banner** displayed on first run
+- **Update notifier** — checks npm registry for new versions
+- **SECURITY.md** with vulnerability reporting process
+- **Full docs** — getting-started.md, configuration.md, supported-tools.md
+- `--dry-run`, `--force`, `--target` flags fully wired and tested
+- Support for both `.airules.yml` and `.airules.yaml`
+
+[Unreleased]: https://github.com/tang-vu/airules/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/tang-vu/airules/releases/tag/v1.0.0
+
 ## [0.4.0] - 2026-04-08
 
 ### Added

@@ -1,6 +1,7 @@
 version: 1
 project:
   name: airules
+  stack: generic
   language: typescript
 targets:
   - claude
@@ -29,7 +30,12 @@ rules:
   security:
     no_secrets_in_code: true
   performance: {}
-custom: []
+custom:
+  - "Always use named exports (no default exports except CLI entry point)"
+  - "All file I/O must use node:fs with proper error handling"
+  - "Use biome for lint + format, never ESLint + Prettier"
+  - "Prefer functional style — pure functions over classes"
+  - "Never use `any` type — use `unknown` with type guards"
 exclude:
   - node_modules
   - dist

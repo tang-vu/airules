@@ -1,5 +1,5 @@
-import { dirname, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import type { AirulesConfig } from "../config/schema.js";
 import type { ProjectProfile } from "../detector/types.js";
 import { AugmentGenerator } from "./augment.js";

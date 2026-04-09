@@ -4,7 +4,7 @@
 
 **One config to rule them all.**
 
-Generate & sync AI coding rules across Claude Code, Cursor, GitHub Copilot, Windsurf, Cline, and Codex — from a single source of truth.
+Generate & sync AI coding rules for 16+ AI coding assistants from a single `.airules.yml` file.
 
 [![npm version](https://img.shields.io/npm/v/@tangvu/airules?color=%23007acc)](https://www.npmjs.com/package/@tangvu/airules)
 [![CI](https://github.com/tang-vu/airules/actions/workflows/ci.yml/badge.svg)](https://github.com/tang-vu/airules/actions/workflows/ci.yml)
@@ -24,34 +24,34 @@ You use Claude Code, Cursor, and GitHub Copilot. Each needs its own config file.
 ## The Solution
 
 ```bash
-npx airules init
+npx @tangvu/airules init
 ```
 
 One command. One config file (`.airules.yml`). All your AI tools get consistent, optimized rules — automatically.
 
 ## ✨ Features
 
-- **🔍 Smart Detection** — Auto-detects your tech stack, framework, dependencies, and project patterns
-- **⚡ Multi-Tool Sync** — Generates rules for 7 AI tools from a single `.airules.yml`
+- **🔍 Smart Detection** — Auto-detects tech stack, framework, dependencies, and patterns (30+ frameworks, 10 languages)
+- **⚡ Multi-Tool Sync** — Generates rules for 16+ AI tools from a single `.airules.yml`
 - **🏆 Score Card** — Grades your rules setup (S/A/B/C/D) with actionable suggestions
-- **📦 Zero Config** — Works out of the box. Run `npx airules init` and you're done
-- **🎯 Stack-Aware** — 30+ framework templates with stack-specific best practices
+- **📦 Zero Config** — Works out of the box. Run `npx @tangvu/airules init` and you're done
+- **🎯 Stack-Aware** — Framework-specific best practices (Next.js, React, FastAPI, Rust, Go, etc.)
 - **🔄 Stay in Sync** — `airules sync` keeps all files up to date when you change `.airules.yml`
 
 ## 🚀 Getting Started
 
 ```bash
 # Scan your project and generate rules for all tools
-npx airules init
+npx @tangvu/airules init
 
 # See what was detected
-npx airules detect
+npx @tangvu/airules detect
 
 # Check your rules quality
-npx airules score
+npx @tangvu/airules score
 
 # Re-sync after editing .airules.yml
-npx airules sync
+npx @tangvu/airules sync
 ```
 
 Or install globally:
@@ -62,15 +62,30 @@ npm install -g @tangvu/airules
 
 ## 🛠️ Supported Tools
 
+### Core Tools
+
 | Tool | Output File | Status |
 |------|------------|--------|
-| Claude Code | `CLAUDE.md` | ✅ |
-| Cursor | `.cursorrules` | ✅ |
-| GitHub Copilot | `.github/copilot-instructions.md` | ✅ |
-| Windsurf | `.windsurfrules` | ✅ |
-| Cline | `.clinerules` | ✅ |
-| OpenAI Codex | `AGENTS.md` | ✅ |
-| Aider | `.aider.conf.yml` | ✅ |
+| [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview) | `CLAUDE.md` | ✅ |
+| [Cursor](https://www.cursor.com/) | `.cursorrules` | ✅ |
+| [GitHub Copilot](https://github.com/features/copilot) | `.github/copilot-instructions.md` | ✅ |
+| [Windsurf](https://www.windsurf.com/) | `.windsurfrules` | ✅ |
+| [Cline](https://cline.bot/) | `.clinerules` | ✅ |
+| [OpenAI Codex](https://platform.openai.com/docs/guides/codex) | `AGENTS.md` | ✅ |
+| [Aider](https://aider.chat/) | `.aider.conf.yml` | ✅ |
+
+### New Tools
+
+| Tool | Output File | Status |
+|------|------------|--------|
+| [Qwen Code](https://qwenlm.github.io/) | `.qwenrules` | ✅ |
+| [Gemini CLI](https://ai.google.dev/gemini-api) | `.gemini/rules.md` | ✅ |
+| [Augment Code](https://augment.dev/) | `.augment/rules.md` | ✅ |
+| [CodeBuddy](https://www.codebuddy.ai/) | `.codebuddy/rules.md` | ✅ |
+| [OpenCode](https://github.com/opencode-ai/opencode) | `AGENTS.md` | ✅ |
+| [Roo Code](https://roocode.com/) | `.roo/rules.md` | ✅ |
+| [KiloCode](https://kilocode.ai/) | `.kilocode/rules.md` | ✅ |
+| [Bolt.new](https://bolt.new/) | `.bolt/rules.md` | ✅ |
 
 ## ⚙️ Configuration
 
@@ -86,6 +101,8 @@ targets:
   - claude
   - cursor
   - copilot
+  - qwen
+  - gemini
 
 rules:
   style:
@@ -114,10 +131,10 @@ Then run `airules sync` to regenerate all files.
 ## 🏆 Score Card
 
 ```bash
-npx airules score
+npx @tangvu/airules score
 ```
 
-Get a visual grade of your AI rules setup with suggestions for improvement. Use `--json` for CI integration.
+Get a visual grade of your AI rules setup (S/A/B/C/D) with suggestions for improvement. Use `--json` for CI integration.
 
 ## 🤝 Contributing
 

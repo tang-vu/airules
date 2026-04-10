@@ -3,12 +3,15 @@
 import { Command } from "commander";
 import { checkForUpdates } from "../utils/version.js";
 import { detectCommand } from "./commands/detect.js";
+import { importCommand } from "./commands/import.js";
 import { initCommand } from "./commands/init.js";
+import { presetCommand } from "./commands/preset.js";
 import { scoreCommand } from "./commands/score.js";
 import { syncCommand } from "./commands/sync.js";
+import { validateCommand } from "./commands/validate.js";
 import { printBanner } from "./ui/banner.js";
 
-const VERSION = "1.0.0";
+const VERSION = "1.3.0";
 
 export function cli(): void {
   const program = new Command();
@@ -36,6 +39,12 @@ export function cli(): void {
     .action(initCommand);
 
   program
+    .command("import")
+    .description("Import existing .cursorrules, CLAUDE.md, etc. into .airules.yml")
+    .option("--force", "Overwrite existing .airules.yml")
+    .action(importCommand);
+
+  program
     .command("sync")
     .description("Re-generate all target files from .airules.yml")
     .option("--detect", "Re-detect project before generating")
@@ -44,6 +53,19 @@ export function cli(): void {
     .option("--target <tool>", "Generate rules for a specific tool only")
     .option("--watch", "Watch .airules.yml for changes and auto-sync")
     .action(syncCommand);
+
+  program
+    .command("validate")
+    .description("Validate .airules.yml for common mistakes and improvements")
+    .option("--strict", "Fail on warnings too")
+    .action(validateCommand);
+
+  program
+    .command("preset")
+    .description("Browse and apply rule presets")
+    .option("--list", "List available presets")
+    .option("--apply <id>", "Apply a preset by ID")
+    .action(presetCommand);
 
   program
     .command("score")

@@ -1,3 +1,6 @@
+import { createHash } from "node:crypto";
+import { existsSync, readFileSync, watch } from "node:fs";
+import { join } from "node:path";
 import chalk from "chalk";
 import { loadConfig } from "../../core/config/loader.js";
 import { detectProject } from "../../core/detector/index.js";
@@ -21,12 +24,15 @@ export async function syncCommand(options: SyncOptions): Promise<void> {
   }
 
   if (options.watch) {
-    info("Watch mode not yet implemented");
+    await runWatchMode(options);
     return;
   }
 
+  await runSync(options);
+}
+
+async function runSync(options: SyncOptions): Promise<void> {
   try {
-    // Step 1: Load config
     const config = loadConfig(process.cwd());
     if (!config) {
       error("No .airules.yml found. Run `airules init` first.");
@@ -34,7 +40,6 @@ export async function syncCommand(options: SyncOptions): Promise<void> {
       return;
     }
 
-    // Step 2: Re-detect if requested
     let profile = undefined;
     if (options.detect) {
       const spinner = createSpinner("Re-detecting project...");
@@ -44,7 +49,6 @@ export async function syncCommand(options: SyncOptions): Promise<void> {
     }
 
     if (!profile) {
-      // Generate a minimal profile from config
       profile = {
         name: config.project.name,
         language: (config.project.language as never) || "other",
@@ -68,7 +72,6 @@ export async function syncCommand(options: SyncOptions): Promise<void> {
       };
     }
 
-    // Step 3: Re-generate
     const spinner = createSpinner("Generating AI rules...");
     spinner.start();
     const results = generateAll(
@@ -97,4 +100,44 @@ export async function syncCommand(options: SyncOptions): Promise<void> {
     error(`Failed: ${err instanceof Error ? err.message : String(err)}`);
     process.exitCode = 1;
   }
+}
+
+async function runWatchMode(options: SyncOptions): Promise<void> {
+  const configPath = join(process.cwd(), ".airules.yml");
+  if (!existsSync(configPath)) {
+    error("No .airules.yml found. Run `airules init` first.");
+    process.exitCode = 1;
+    return;
+  }
+
+  info("Watch mode enabled. Press Ctrl+C to stop.");
+  info("Watching: .airules.yml");
+  console.log("");
+
+  // Initial sync
+  await runSync({ ...options, watch: false });
+  console.log("");
+
+  // Watch for changes
+  let lastHash = getFileHash(configPath);
+
+  watch(configPath, async () => {
+    const currentHash = getFileHash(configPath);
+    if (currentHash === lastHash) return;
+    lastHash = currentHash;
+
+    console.log("");
+    info("📄 .airules.yml changed — re-syncing...");
+    await runSync({ ...options, watch: false, detect: false });
+    console.log("");
+    info("Watching for changes... (Ctrl+C to stop)");
+  });
+
+  // Keep process alive
+  await new Promise(() => {});
+}
+
+function getFileHash(filePath: string): string {
+  const content = readFileSync(filePath, "utf-8");
+  return createHash("md5").update(content).digest("hex");
 }

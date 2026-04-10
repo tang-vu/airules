@@ -1,0 +1,46 @@
+name: "airules Score Check"
+description: "Check airules score and fail if below threshold"
+author: "Tang Vu"
+
+inputs:
+  min-score:
+    description: "Minimum score required (0-100)"
+    required: false
+    default: "70"
+  strict:
+    description: "Fail on warnings too"
+    required: false
+    default: "false"
+  config-path:
+    description: "Path to .airules.yml"
+    required: false
+    default: ".airules.yml"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: "22"
+
+    - name: Install airules
+      shell: bash
+      run: npm install -g @tangvu/airules
+
+    - name: Check Score
+      shell: bash
+      run: |
+        SCORE=$(airules score --json | jq '.scores.overall')
+        echo "Score: $SCORE/100"
+        if [ "$SCORE" -lt "${{ inputs.min-score }}" ]; then
+          echo "::error::Score $SCORE is below minimum ${{ inputs.min-score }}"
+          exit 1
+        fi
+        echo "✅ Score $SCORE meets minimum ${{ inputs.min-score }}"
+      env:
+        AIRULES_CONFIG: ${{ inputs.config-path }}
+
+branding:
+  icon: "check-circle"
+  color: "green"

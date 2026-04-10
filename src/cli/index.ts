@@ -3,15 +3,17 @@
 import { Command } from "commander";
 import { checkForUpdates } from "../utils/version.js";
 import { detectCommand } from "./commands/detect.js";
+import { fetchCommand } from "./commands/fetch.js";
 import { importCommand } from "./commands/import.js";
 import { initCommand } from "./commands/init.js";
 import { presetCommand } from "./commands/preset.js";
 import { scoreCommand } from "./commands/score.js";
+import { statusCommand } from "./commands/status.js";
 import { syncCommand } from "./commands/sync.js";
 import { validateCommand } from "./commands/validate.js";
 import { printBanner } from "./ui/banner.js";
 
-const VERSION = "1.3.0";
+const VERSION = "1.4.0";
 
 export function cli(): void {
   const program = new Command();
@@ -45,6 +47,13 @@ export function cli(): void {
     .action(importCommand);
 
   program
+    .command("fetch")
+    .description("Load .airules.yml from remote URL or GitHub repo")
+    .option("--output <path>", "Save config to specific path")
+    .option("--merge", "Merge with local config")
+    .action(fetchCommand);
+
+  program
     .command("sync")
     .description("Re-generate all target files from .airules.yml")
     .option("--detect", "Re-detect project before generating")
@@ -53,6 +62,12 @@ export function cli(): void {
     .option("--target <tool>", "Generate rules for a specific tool only")
     .option("--watch", "Watch .airules.yml for changes and auto-sync")
     .action(syncCommand);
+
+  program
+    .command("status")
+    .description("Show pending changes before sync")
+    .option("--json", "Output as JSON")
+    .action(statusCommand);
 
   program
     .command("validate")

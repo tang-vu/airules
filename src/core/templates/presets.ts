@@ -1,10 +1,11 @@
-import type { AirulesConfig } from "../config/schema.js";
-
 export interface Preset {
   id: string;
   name: string;
   description: string;
-  config: Partial<AirulesConfig>;
+  config: {
+    rules?: Record<string, Record<string, unknown>>;
+    custom?: string[];
+  };
 }
 
 export const PRESETS: Preset[] = [
@@ -15,9 +16,9 @@ export const PRESETS: Preset[] = [
     config: {
       rules: {
         style: {
-          naming_convention: "camelCase" as const,
-          import_style: "named" as const,
-          quote_style: "double" as const,
+          naming_convention: "camelCase",
+          import_style: "named",
+          quote_style: "double",
           prefer_functional: true,
           max_file_length: 200,
         },
@@ -109,9 +110,9 @@ export const PRESETS: Preset[] = [
     config: {
       rules: {
         style: {
-          naming_convention: "camelCase" as const,
-          import_style: "named" as const,
-          quote_style: "double" as const,
+          naming_convention: "camelCase",
+          import_style: "named",
+          quote_style: "double",
         },
         security: {
           no_secrets_in_code: true,

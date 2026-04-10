@@ -93,7 +93,6 @@ export function formatDiffTable(diffs: DiffResult[]): string {
     hasChanges = true;
 
     const icon = d.status === "added" ? "+" : d.status === "modified" ? "~" : "-";
-    const _color = d.status === "added" ? "green" : d.status === "modified" ? "yellow" : "red";
 
     const changeInfo =
       d.status === "added"

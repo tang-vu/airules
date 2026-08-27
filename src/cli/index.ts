@@ -2,6 +2,7 @@
 
 import { Command } from "commander";
 import { checkForUpdates } from "../utils/version.js";
+import { checkCommand } from "./commands/check.js";
 import { detectCommand } from "./commands/detect.js";
 import { fetchCommand } from "./commands/fetch.js";
 import { importCommand } from "./commands/import.js";
@@ -68,6 +69,13 @@ export function cli(): void {
     .description("Show pending changes before sync")
     .option("--json", "Output as JSON")
     .action(statusCommand);
+
+  program
+    .command("check")
+    .description("Fail when generated AI rule files drift from .airules.yml")
+    .option("--json", "Output machine-readable JSON")
+    .option("--target <tool>", "Check a specific tool only")
+    .action(checkCommand);
 
   program
     .command("validate")

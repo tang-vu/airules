@@ -1,6 +1,6 @@
 import { loadConfig } from "../../core/config/loader.js";
 import { detectProject } from "../../core/detector/index.js";
-import { diffSync, formatDiffTable, type DiffResult } from "../../core/sync/diff.js";
+import { type DiffResult, diffSync, formatDiffTable } from "../../core/sync/diff.js";
 import { heading, info, success, warn } from "../ui/logger.js";
 import { createSpinner } from "../ui/spinner.js";
 
@@ -52,7 +52,9 @@ export async function checkCommand(options: CheckOptions): Promise<void> {
     } else if (ok) {
       success("Generated AI rule files are in sync with .airules.yml.");
     } else {
-      warn(`${changes.length} generated rule file${changes.length === 1 ? " is" : "s are"} out of sync.`);
+      warn(
+        `${changes.length} generated rule file${changes.length === 1 ? " is" : "s are"} out of sync.`,
+      );
       console.log(formatDiffTable(diffs));
       console.log("");
       info("Run `airules sync` and commit the generated files.");

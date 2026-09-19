@@ -35,3 +35,9 @@ tests/fixtures/*/node_modules/
 *.tmp
 *.temp
 .cache/
+
+# AI assistant artifacts
+.devin/
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+NUL

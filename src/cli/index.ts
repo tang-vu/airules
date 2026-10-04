@@ -36,14 +36,15 @@ export function cli(): void {
     .command("init")
     .description("Scan project and generate AI coding rules for all configured tools")
     .option("--dry-run", "Preview changes without writing files")
-    .option("--force", "Overwrite existing files without prompting")
+    .option("--force", "Replace existing config and selected rule files")
     .option("--target <tool>", "Generate rules for a specific tool only")
     .action(initCommand);
 
   program
     .command("import")
     .description("Import existing .cursorrules, CLAUDE.md, etc. into .airules.yml")
-    .option("--force", "Overwrite existing .airules.yml")
+    .option("--dry-run", "Preview import without writing files")
+    .option("--force", "Replace existing .airules.yml or .airules.yaml")
     .action(importCommand);
 
   program

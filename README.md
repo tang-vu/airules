@@ -54,6 +54,11 @@ npx @tangvu/airules score
 npx @tangvu/airules sync
 ```
 
+`init` preserves existing rule files and stops if `.airules.yml` or `.airules.yaml` already exists.
+Use `sync` to update rules from your config, or `init --force` to replace your setup.
+To carry hand-written rules into future syncs, use `import` (`import --force` if a config already exists).
+Preview either `init` or `import` with `--dry-run` before writing files.
+
 Or install globally:
 
 ```bash

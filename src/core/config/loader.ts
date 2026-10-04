@@ -5,10 +5,14 @@ import type { ProjectProfile } from "../detector/types.js";
 import { getDefaultConfig } from "./defaults.js";
 import { type AirulesConfig, airulesConfigSchema } from "./schema.js";
 
-export function loadConfig(cwd: string): AirulesConfig | null {
+export function findConfigPath(cwd: string): string | null {
   const ymlPath = join(cwd, ".airules.yml");
   const yamlPath = join(cwd, ".airules.yaml");
-  const configPath = existsSync(ymlPath) ? ymlPath : existsSync(yamlPath) ? yamlPath : null;
+  return existsSync(ymlPath) ? ymlPath : existsSync(yamlPath) ? yamlPath : null;
+}
+
+export function loadConfig(cwd: string): AirulesConfig | null {
+  const configPath = findConfigPath(cwd);
 
   if (!configPath) {
     return null;
@@ -28,7 +32,11 @@ export function generateConfigFromProfile(profile: ProjectProfile): AirulesConfi
   return getDefaultConfig(profile);
 }
 
-export function saveConfig(cwd: string, config: AirulesConfig): void {
+export function saveConfig(
+  cwd: string,
+  config: AirulesConfig,
+  configPath = join(cwd, ".airules.yml"),
+): void {
   const content = stringify(config, { indent: 2 });
-  writeFileSync(join(cwd, ".airules.yml"), content);
+  writeFileSync(configPath, content);
 }

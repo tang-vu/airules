@@ -97,12 +97,34 @@ exclude:
 
 Scan project and generate AI coding rules for all configured tools.
 
+Existing rule files are preserved and listed in the output; missing target files are generated.
+If `.airules.yml` or `.airules.yaml` already exists (even if invalid), initialization stops
+without changing any files. Use `airules sync` to regenerate rules from your config.
+Use `--force` only to replace the config and the selected rule files with newly detected defaults.
+An existing `.airules.yaml` is replaced in place; if both aliases exist, `.airules.yml` takes precedence.
+
 ```bash
 npx @tangvu/airules init
 npx @tangvu/airules init --dry-run   # Preview without writing
 npx @tangvu/airules init --force     # Overwrite existing files
 npx @tangvu/airules init --target claude  # Generate for one tool only
 ```
+
+To keep hand-written rules in future syncs, import them into your config before syncing.
+
+### `airules import`
+
+Import existing AI rule files into a new config without modifying the source rule files.
+An existing `.airules.yml` or `.airules.yaml` is preserved unless `--force` is supplied.
+Force replaces the active config in place; it does not merge with its previous contents.
+
+```bash
+npx @tangvu/airules import
+npx @tangvu/airules import --dry-run   # Preview without writing
+npx @tangvu/airules import --force     # Replace config with imported rules
+```
+
+`--dry-run` never writes files, including when combined with `--force` for either command.
 
 ### `airules sync`
 

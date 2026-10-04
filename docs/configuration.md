@@ -137,6 +137,17 @@ npx @tangvu/airules sync --dry-run   # Preview changes
 npx @tangvu/airules sync --target cursor  # Sync one tool only
 ```
 
+### `airules status`
+
+Preview changes to the configured target files without writing them.
+Existing rule files outside `targets` are ignored: `sync` leaves them in place,
+so they are not reported as pending deletions.
+
+```bash
+npx @tangvu/airules status
+npx @tangvu/airules status --json    # Include per-file change details
+```
+
 ### `airules score`
 
 Score the quality of your AI coding rules.

@@ -18,7 +18,7 @@ export function diffSync(
   cwd: string,
   targetTool?: string,
 ): DiffResult[] {
-  // Generate new content
+  // Compare only outputs sync would write; other rule files are left untouched.
   const generated = generateAll(profile, config, cwd, true, true, targetTool);
   const results: DiffResult[] = [];
 
@@ -53,31 +53,6 @@ export function diffSync(
           linesRemoved: Math.max(0, existingLines - newLines),
         });
       }
-    }
-  }
-
-  // Check for files that will be deleted (not in targets)
-  const targetFiles = new Set(generated.map((f) => f.path));
-  const knownFiles = [
-    "CLAUDE.md",
-    ".cursorrules",
-    ".github/copilot-instructions.md",
-    ".windsurfrules",
-    ".clinerules",
-    "AGENTS.md",
-    ".aider.conf.yml",
-  ];
-
-  for (const knownFile of knownFiles) {
-    if (!targetFiles.has(knownFile) && existsSync(join(cwd, knownFile))) {
-      const content = readFileSync(join(cwd, knownFile), "utf-8");
-      results.push({
-        file: knownFile,
-        tool: "unknown",
-        status: "deleted",
-        linesAdded: 0,
-        linesRemoved: content.split("\n").length,
-      });
     }
   }
 

@@ -38,6 +38,7 @@ const importantFiles = [
   ".clinerules",
   ".windsurfrules",
   "AGENTS.md",
+  "AIDER.md",
   ".airules.yml",
   ".airules.yaml",
   "docker-compose.yml",

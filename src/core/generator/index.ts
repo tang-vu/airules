@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import type { AirulesConfig } from "../config/schema.js";
 import type { ProjectProfile } from "../detector/types.js";
+import { AiderGenerator, assertAiderFileSafe } from "./aider.js";
 import { AugmentGenerator } from "./augment.js";
 import type { BaseGenerator } from "./base.js";
 import { BoltGenerator } from "./bolt.js";
@@ -25,6 +26,7 @@ const generatorMap: Record<string, () => BaseGenerator> = {
   windsurf: () => new WindsurfGenerator(),
   cline: () => new ClineGenerator(),
   codex: () => new CodexGenerator(),
+  aider: () => new AiderGenerator(),
   qwen: () => new QwenGenerator(),
   gemini: () => new GeminiGenerator(),
   augment: () => new AugmentGenerator(),
@@ -59,6 +61,9 @@ export function generateAll(
     const generator = factory();
     const content = generator.generate(profile, config);
     const outputPath = join(cwd, generator.outputPath);
+
+    // Aider configuration can contain credentials. Do not access it through an output alias.
+    if (tool === "aider") assertAiderFileSafe(outputPath);
 
     if (!force && existsSync(outputPath)) {
       const existing = readFileSync(outputPath, "utf-8");

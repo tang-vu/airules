@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { assertAiderFileSafe } from "../generator/aider.js";
 
 export interface ImportSource {
   tool: string;
@@ -20,6 +21,7 @@ const IMPORTABLE_FILES = [
   { tool: "windsurf", file: ".windsurfrules" },
   { tool: "cline", file: ".clinerules" },
   { tool: "codex", file: "AGENTS.md" },
+  { tool: "aider", file: "AIDER.md" },
 ];
 
 function isRuleLine(line: string): boolean {
@@ -49,6 +51,7 @@ export function findExistingConfigs(cwd: string): ImportSource[] {
   const sources: ImportSource[] = [];
   for (const { tool, file } of IMPORTABLE_FILES) {
     const fullPath = join(cwd, file);
+    if (tool === "aider") assertAiderFileSafe(fullPath);
     if (existsSync(fullPath)) {
       const content = readFileSync(fullPath, "utf-8");
       sources.push({ tool, file, content });

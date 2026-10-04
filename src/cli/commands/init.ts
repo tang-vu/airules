@@ -81,6 +81,10 @@ export async function initCommand(options: InitOptions): Promise<void> {
     if (preserved.length > 0) {
       info("Run `airules import --force` to include existing rules in your config before syncing.");
     }
+    if (targets.includes("aider")) {
+      info("Load conventions in Aider with `aider --read AIDER.md`.");
+      info("Add aider to .airules.yml targets to include it in future syncs and checks.");
+    }
     console.log("");
 
     if (options.dryRun) {

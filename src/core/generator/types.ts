@@ -11,7 +11,7 @@ export const GENERATOR_MAP: Record<string, string> = {
   windsurf: ".windsurfrules",
   cline: ".clinerules",
   codex: "AGENTS.md",
-  aider: ".aider.conf.yml",
+  aider: "AIDER.md",
   qwen: ".qwenrules",
   gemini: ".gemini/rules.md",
   augment: ".augment/rules.md",

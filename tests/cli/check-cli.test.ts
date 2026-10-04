@@ -19,7 +19,7 @@ function run(...args: string[]) {
 }
 
 describe("check CLI after development branch reconciliation", () => {
-  it.each(["claud", "aider", "", "constructor", "__proto__"])(
+  it.each(["claud", "", "constructor", "__proto__"])(
     "rejects unsupported selected target %j in JSON and human modes",
     (target) => {
       writeFileSync(join(cwd, ".airules.yml"), "targets: [claude]\n");
@@ -38,24 +38,23 @@ describe("check CLI after development branch reconciliation", () => {
     },
   );
 
-  it.each(["[aider]", "[claude, aider]"])(
-    "rejects configured targets without generators: %s",
-    (targets) => {
-      writeFileSync(join(cwd, ".airules.yml"), `targets: ${targets}\n`);
-      const result = run("check", "--json");
-      expect(result.status).toBe(2);
-      expect(JSON.parse(result.stdout)).toEqual({
-        ok: false,
-        error: expect.stringContaining("aider"),
-        changes: [],
-      });
+  it.each(["[aider]", "[claude, aider]"])("checks supported Aider selections: %s", (targets) => {
+    writeFileSync(join(cwd, ".airules.yml"), `targets: ${targets}\n`);
+    const result = run("check", "--json");
+    expect(result.status).toBe(1);
+    expect(JSON.parse(result.stdout)).toMatchObject({
+      ok: false,
+      checked: targets === "[aider]" ? 1 : 2,
+      changes: expect.arrayContaining([
+        expect.objectContaining({ file: "AIDER.md", tool: "aider", status: "added" }),
+      ]),
+    });
 
-      // An explicit supported target overrides the configured selection.
-      const selected = run("check", "--json", "--target", "claude");
-      expect(selected.status).toBe(1);
-      expect(JSON.parse(selected.stdout)).toMatchObject({ ok: false, checked: 1, changed: 1 });
-    },
-  );
+    // An explicit supported target overrides the configured selection.
+    const selected = run("check", "--json", "--target", "claude");
+    expect(selected.status).toBe(1);
+    expect(JSON.parse(selected.stdout)).toMatchObject({ ok: false, checked: 1, changed: 1 });
+  });
 
   it("preserves an intentionally empty target selection", () => {
     writeFileSync(join(cwd, ".airules.yml"), "targets: []\n");

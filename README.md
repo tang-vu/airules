@@ -4,7 +4,7 @@
 
 **One config to rule them all.**
 
-Generate & sync AI coding rules for 16+ AI coding assistants from a single `.airules.yml` file.
+Generate & sync AI coding rules for 15 AI coding assistants from a single `.airules.yml` file.
 
 [![npm version](https://img.shields.io/npm/v/@tangvu/airules?color=%23007acc)](https://www.npmjs.com/package/@tangvu/airules)
 [![CI](https://github.com/tang-vu/airules/actions/workflows/ci.yml/badge.svg)](https://github.com/tang-vu/airules/actions/workflows/ci.yml)
@@ -32,7 +32,7 @@ One command. One config file (`.airules.yml`). All your AI tools get consistent,
 ## ✨ Features
 
 - **🔍 Smart Detection** — Auto-detects tech stack, framework, dependencies, and patterns (30+ frameworks, 10 languages)
-- **⚡ Multi-Tool Sync** — Generates rules for 16+ AI tools from a single `.airules.yml`
+- **⚡ Multi-Tool Sync** — Generates rules for 15 AI tools from a single `.airules.yml`
 - **🏆 Score Card** — Grades your rules setup (S/A/B/C/D) with actionable suggestions
 - **📦 Zero Config** — Works out of the box. Run `npx @tangvu/airules init` and you're done
 - **🎯 Stack-Aware** — Framework-specific best practices (Next.js, React, FastAPI, Rust, Go, etc.)
@@ -77,7 +77,7 @@ npm install -g @tangvu/airules
 | [Windsurf](https://www.windsurf.com/) | `.windsurfrules` | ✅ |
 | [Cline](https://cline.bot/) | `.clinerules` | ✅ |
 | [OpenAI Codex](https://platform.openai.com/docs/guides/codex) | `AGENTS.md` | ✅ |
-| [Aider](https://aider.chat/) | `.aider.conf.yml` | ✅ |
+| [Aider](https://aider.chat/) | `AIDER.md` | ✅ Load with `aider --read AIDER.md` |
 
 ### New Tools
 

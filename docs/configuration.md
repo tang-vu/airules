@@ -22,7 +22,7 @@ targets:
   - windsurf      # .windsurfrules
   - cline         # .clinerules
   - codex         # AGENTS.md
-  - aider         # .aider.conf.yml
+  - aider         # AIDER.md (load with aider --read AIDER.md)
   - qwen          # .qwenrules
   - gemini        # .gemini/rules.md
   - augment       # .augment/rules.md
@@ -136,6 +136,12 @@ npx @tangvu/airules sync --detect    # Re-detect project first
 npx @tangvu/airules sync --dry-run   # Preview changes
 npx @tangvu/airules sync --target cursor  # Sync one tool only
 ```
+
+Aider exports conventions to `AIDER.md`. Load it with `aider --read AIDER.md`;
+airules leaves Aider's own configuration and credentials untouched. See the
+[Aider setup and ownership contract](supported-tools.md#aider) for persistent
+loading and preservation behavior. `--target` selects one invocation only;
+edit `targets` in `.airules.yml` to save your tool selection.
 
 ### `airules status`
 

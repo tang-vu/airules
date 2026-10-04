@@ -89,6 +89,10 @@ async function runSync(options: SyncOptions): Promise<void> {
     for (const result of results) {
       console.log(`  ${chalk.green("✔")} ${result.path} (${result.tool})`);
     }
+    const targets = options.target ? [options.target] : config.targets;
+    if (targets.includes("aider")) {
+      info("Load conventions in Aider with `aider --read AIDER.md`.");
+    }
     console.log("");
 
     if (options.dryRun) {

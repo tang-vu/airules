@@ -38,7 +38,7 @@ export async function importCommand(options: ImportOptions): Promise<void> {
     if (result.sources.length === 0) {
       warn("No existing AI rule files found.");
       info(
-        "Supported files: CLAUDE.md, .cursorrules, .github/copilot-instructions.md, .windsurfrules, .clinerules, AGENTS.md",
+        "Supported files: CLAUDE.md, .cursorrules, .github/copilot-instructions.md, .windsurfrules, .clinerules, AGENTS.md, AIDER.md",
       );
       info("Run `airules init` instead to generate from scratch.");
       return;

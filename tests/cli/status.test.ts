@@ -1,33 +1,10 @@
-import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
-import { build } from "tsup";
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { runCli } from "./run-cli.js";
 
-const repoRoot = fileURLToPath(new URL("../../", import.meta.url));
-let buildDir: string;
 let cwd: string;
-
-beforeAll(async () => {
-  // Keep dependencies resolvable while building a fresh CLI independently of dist/.
-  buildDir = mkdtempSync(join(repoRoot, "node_modules", ".airules-cli-test-"));
-  await build({
-    entry: [join(repoRoot, "src/cli/index.ts")],
-    outDir: buildDir,
-    format: ["esm"],
-    outExtension: () => ({ js: ".mjs" }),
-    target: "node18",
-    config: false,
-    dts: false,
-    silent: true,
-  });
-});
-
-afterAll(() => {
-  rmSync(buildDir, { recursive: true, force: true });
-});
 
 beforeEach(() => {
   cwd = mkdtempSync(join(tmpdir(), "airules-status-"));
@@ -38,12 +15,9 @@ afterEach(() => {
 });
 
 function run(...args: string[]): string {
-  return execFileSync(process.execPath, [join(buildDir, "index.mjs"), ...args], {
-    cwd,
-    encoding: "utf8",
-    timeout: 10000,
-    stdio: ["ignore", "pipe", "pipe"],
-  });
+  const result = runCli(cwd, ...args);
+  expect(result.status).toBe(0);
+  return result.stdout;
 }
 
 describe("status CLI", () => {
@@ -55,8 +29,7 @@ describe("status CLI", () => {
     run("sync", "--detect", "--target", "claude");
     const generated = readFileSync(join(cwd, "CLAUDE.md"), "utf8");
     const output = run("status", "--json");
-    // Status currently prints a heading before its JSON payload.
-    const result = JSON.parse(output.slice(output.indexOf("{")));
+    const result = JSON.parse(output);
 
     expect(result.diffs).toEqual([
       {

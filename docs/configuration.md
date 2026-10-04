@@ -148,6 +148,32 @@ npx @tangvu/airules status
 npx @tangvu/airules status --json    # Include per-file change details
 ```
 
+With valid command syntax and `--json`, stdout contains a single JSON object,
+without headings, spinners, or update checks. Successful output remains
+`{ "config": true, "diffs": [...] }`.
+Missing or invalid configuration returns
+`{ "config": false, "error": "config-not-found", "diffs": [] }`; other failures
+return `{ "error": "..." }`. Status retains its informational exit code of `0`;
+use `check` to fail a CI job on drift or invalid input.
+
+### `airules check`
+
+Check generated files without changing them. `--target` overrides the configured
+targets; without it, every configured target must have a supported generator.
+Unknown or unsupported selections fail rather than silently checking zero files.
+
+```bash
+npx @tangvu/airules check
+npx @tangvu/airules check --json
+npx @tangvu/airules check --json --target claude
+```
+
+Exit codes are `0` for no drift, `1` for missing or changed output, and `2` for
+configuration, unsupported target names, or execution errors. With valid command
+syntax and `--json`, stdout contains one JSON object and no update checks run.
+Drift results contain `ok`, `checked`,
+`changed`, and `changes`; errors contain `ok: false`, `error`, and `changes: []`.
+
 ### `airules score`
 
 Score the quality of your AI coding rules.
@@ -156,6 +182,16 @@ Score the quality of your AI coding rules.
 npx @tangvu/airules score
 npx @tangvu/airules score --json     # JSON output for CI
 ```
+
+With valid command syntax and `--json`, stdout contains one JSON object without
+headings, spinners, or update checks. Success retains the `project`, `scores`, `suggestions`, and
+`timestamp` fields and exits `0`. Missing or invalid configuration returns
+`{ "error": "config-not-found" }`; other failures return `{ "error": "..." }`.
+Both error cases exit `1`.
+
+For all commands, CLI usage errors such as unknown options, missing option values,
+or extra positional arguments are reported on stderr with exit code `1` before
+the command runs; these usage errors do not produce a JSON object.
 
 ### `airules detect`
 

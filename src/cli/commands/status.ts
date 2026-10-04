@@ -11,19 +11,25 @@ interface StatusOptions {
 }
 
 export async function statusCommand(options: StatusOptions): Promise<void> {
-  heading("📊 airules status");
+  if (!options.json) heading("📊 airules status");
 
   try {
     const config = loadConfig(process.cwd());
     if (!config) {
-      warn("No .airules.yml found. Run `airules init` first.");
+      if (options.json) {
+        console.log(
+          JSON.stringify({ config: false, error: "config-not-found", diffs: [] }, null, 2),
+        );
+      } else {
+        warn("No .airules.yml found. Run `airules init` first.");
+      }
       return;
     }
 
-    const spinner = createSpinner("Analyzing changes...");
-    spinner.start();
+    const spinner = options.json ? null : createSpinner("Analyzing changes...");
+    spinner?.start();
     const profile = await detectProject(process.cwd());
-    spinner.stop();
+    spinner?.stop();
 
     const diffs = diffSync(profile, config, process.cwd());
 
@@ -59,6 +65,11 @@ export async function statusCommand(options: StatusOptions): Promise<void> {
       info("Run `airules sync` to apply changes.");
     }
   } catch (err: unknown) {
-    warn(`Failed: ${err instanceof Error ? err.message : String(err)}`);
+    const message = err instanceof Error ? err.message : String(err);
+    if (options.json) {
+      console.log(JSON.stringify({ error: message }, null, 2));
+    } else {
+      warn(`Failed: ${message}`);
+    }
   }
 }

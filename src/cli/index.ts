@@ -25,8 +25,10 @@ export function cli(): void {
     printBanner();
   }
 
-  // Check for updates
-  checkForUpdates().catch(() => {});
+  // Machine-readable commands must not start background update requests or notices.
+  if (!process.argv.includes("--json")) {
+    checkForUpdates().catch(() => {});
+  }
 
   program
     .name("airules")

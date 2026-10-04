@@ -1,34 +1,10 @@
-import { spawnSync } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
-import { build } from "tsup";
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { runCli } from "./run-cli.js";
 
-const repoRoot = fileURLToPath(new URL("../../", import.meta.url));
-let buildDir: string;
 let cwd: string;
-
-beforeAll(async () => {
-  buildDir = mkdtempSync(join(repoRoot, "node_modules", ".airules-check-test-"));
-  // The isolated source bundle has no package metadata, so the CLI's optional
-  // update check is caught before any registry request. Parse stdout unmodified.
-  await build({
-    entry: [join(repoRoot, "src/cli/index.ts")],
-    outDir: join(buildDir, "cli"),
-    format: ["esm"],
-    outExtension: () => ({ js: ".mjs" }),
-    target: "node18",
-    config: false,
-    dts: false,
-    silent: true,
-  });
-});
-
-afterAll(() => {
-  rmSync(buildDir, { recursive: true, force: true });
-});
 
 beforeEach(() => {
   cwd = mkdtempSync(join(tmpdir(), "airules-check-"));
@@ -39,18 +15,55 @@ afterEach(() => {
 });
 
 function run(...args: string[]) {
-  const result = spawnSync(process.execPath, [join(buildDir, "cli/index.mjs"), ...args], {
-    cwd,
-    encoding: "utf8",
-    timeout: 10000,
-    stdio: ["ignore", "pipe", "pipe"],
-  });
-  expect(result.error).toBeUndefined();
-  expect(result.signal).toBeNull();
-  return result;
+  return runCli(cwd, ...args);
 }
 
 describe("check CLI after development branch reconciliation", () => {
+  it.each(["claud", "aider", "", "constructor", "__proto__"])(
+    "rejects unsupported selected target %j in JSON and human modes",
+    (target) => {
+      writeFileSync(join(cwd, ".airules.yml"), "targets: [claude]\n");
+      const json = run("check", "--json", "--target", target);
+      expect(json.status).toBe(2);
+      expect(JSON.parse(json.stdout)).toEqual({
+        ok: false,
+        error: expect.stringContaining("Unsupported target"),
+        changes: [],
+      });
+      const text = run("check", "--target", target);
+      expect(text.status).toBe(2);
+      expect(text.stdout).toContain("Unsupported target");
+      expect(text.stdout).not.toContain("files are in sync");
+      expect(existsSync(join(cwd, "CLAUDE.md"))).toBe(false);
+    },
+  );
+
+  it.each(["[aider]", "[claude, aider]"])(
+    "rejects configured targets without generators: %s",
+    (targets) => {
+      writeFileSync(join(cwd, ".airules.yml"), `targets: ${targets}\n`);
+      const result = run("check", "--json");
+      expect(result.status).toBe(2);
+      expect(JSON.parse(result.stdout)).toEqual({
+        ok: false,
+        error: expect.stringContaining("aider"),
+        changes: [],
+      });
+
+      // An explicit supported target overrides the configured selection.
+      const selected = run("check", "--json", "--target", "claude");
+      expect(selected.status).toBe(1);
+      expect(JSON.parse(selected.stdout)).toMatchObject({ ok: false, checked: 1, changed: 1 });
+    },
+  );
+
+  it("preserves an intentionally empty target selection", () => {
+    writeFileSync(join(cwd, ".airules.yml"), "targets: []\n");
+    const result = run("check", "--json");
+    expect(result.status).toBe(0);
+    expect(JSON.parse(result.stdout)).toEqual({ ok: true, checked: 0, changed: 0, changes: [] });
+  });
+
   it.each(["[claude]", "[claude, codex]"])(
     "checks a selected target while preserving other rules with targets: %s",
     (targets) => {

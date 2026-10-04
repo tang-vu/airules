@@ -1,5 +1,6 @@
 import { loadConfig } from "../../core/config/loader.js";
 import { detectProject } from "../../core/detector/index.js";
+import { listGenerators } from "../../core/generator/index.js";
 import { type DiffResult, diffSync, formatDiffTable } from "../../core/sync/diff.js";
 import { heading, info, success, warn } from "../ui/logger.js";
 import { createSpinner } from "../ui/spinner.js";
@@ -24,6 +25,17 @@ export async function checkCommand(options: CheckOptions): Promise<void> {
       }
       process.exitCode = 2;
       return;
+    }
+
+    const supportedTargets = listGenerators();
+    const selectedTargets = options.target === undefined ? config.targets : [options.target];
+    const unsupportedTargets = selectedTargets.filter(
+      (target) => !supportedTargets.includes(target),
+    );
+    if (unsupportedTargets.length > 0) {
+      throw new Error(
+        `Unsupported target(s): ${unsupportedTargets.map((target) => JSON.stringify(target)).join(", ")}. Supported targets: ${supportedTargets.join(", ")}`,
+      );
     }
 
     if (!options.json) heading("airules check");

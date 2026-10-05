@@ -83,14 +83,18 @@ npm install -g @tangvu/airules
 
 | Tool | Output File | Status |
 |------|------------|--------|
-| [Qwen Code](https://qwenlm.github.io/) | `.qwenrules` | ✅ |
-| [Gemini CLI](https://ai.google.dev/gemini-api) | `.gemini/rules.md` | ✅ |
+| [Qwen Code](https://qwenlm.github.io/qwen-code-docs/en/users/features/memory/) | `QWEN.md` | ✅ |
+| [Gemini CLI](https://geminicli.com/docs/cli/gemini-md/) | `GEMINI.md` | ✅ |
 | [Augment Code](https://augment.dev/) | `.augment/rules.md` | ✅ |
 | [CodeBuddy](https://www.codebuddy.ai/) | `.codebuddy/rules.md` | ✅ |
 | [OpenCode](https://github.com/opencode-ai/opencode) | `AGENTS.md` | ✅ |
 | [Roo Code](https://roocode.com/) | `.roo/rules.md` | ✅ |
 | [KiloCode](https://kilocode.ai/) | `.kilocode/rules.md` | ✅ |
 | [Bolt.new](https://bolt.new/) | `.bolt/rules.md` | ✅ |
+
+Gemini/Qwen exports now use `GEMINI.md`/`QWEN.md`. Existing human-maintained
+context files are protected from normal sync, and legacy exports are preserved.
+See the [migration and custom-filename guide](docs/supported-tools.md#gemini-cli-and-qwen-code).
 
 ## ⚙️ Configuration
 

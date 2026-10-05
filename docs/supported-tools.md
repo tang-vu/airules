@@ -18,8 +18,8 @@ airules generates AI coding rules for the following tools:
 
 | Tool | Output File | Status |
 |------|------------|--------|
-| [Qwen Code](https://qwenlm.github.io/) | `.qwenrules` | ✅ |
-| [Gemini CLI](https://ai.google.dev/gemini-api) | `.gemini/rules.md` | ✅ |
+| [Qwen Code](https://qwenlm.github.io/qwen-code-docs/en/users/features/memory/) | `QWEN.md` | ✅ |
+| [Gemini CLI](https://geminicli.com/docs/cli/gemini-md/) | `GEMINI.md` | ✅ |
 | [Augment Code](https://augment.dev/) | `.augment/rules.md` | ✅ |
 | [CodeBuddy](https://www.codebuddy.ai/) | `.codebuddy/rules.md` | ✅ |
 | [OpenCode](https://github.com/opencode-ai/opencode) | `AGENTS.md` | ✅ |
@@ -88,6 +88,54 @@ airules config rather than merging with it. Every `--dry-run` leaves files uncha
 `--target aider` selects one command's output; it does not change the saved
 targets. Default targets remain Claude, Cursor, and Copilot. Add Aider to
 `.airules.yml` to include it in future unscoped `sync`, `status`, and `check` runs.
+
+## Gemini CLI and Qwen Code
+
+Gemini CLI loads project context from `GEMINI.md` by default. Qwen Code loads
+`QWEN.md` in the project root. See the official [Gemini context guide](https://geminicli.com/docs/cli/gemini-md/)
+and [Qwen memory guide](https://qwenlm.github.io/qwen-code-docs/en/users/features/memory/).
+
+Add `gemini` and/or `qwen` to `.airules.yml` targets, then run `airules sync`.
+`init --target gemini` or `init --target qwen` selects only that command's output;
+it does not change the saved targets (Claude, Cursor, and Copilot by default).
+These generators use the saved project stack/language and target-specific rules
+from `.airules.yml`, including with `sync --detect`, so `status` and `check`
+compare the same content that `sync` writes. Edit the config to change these values.
+
+### Migrating older airules exports safely
+
+Earlier versions wrote `.gemini/rules.md` and `.qwenrules`. Those legacy files are
+never updated or deleted by generation. Missing new destinations appear as
+`added` in `status`/`check`; syncing creates the new files from `.airules.yml`.
+Review any hand-edited legacy rules and copy them into your config before syncing.
+`import` reads both current and legacy paths without changing their contents.
+`import --force` replaces the active airules config rather than merging with it:
+back it up first, review the imported config, and restore the desired targets.
+
+Unforced `init` preserves an existing `GEMINI.md` or `QWEN.md`. Ordinary `sync`
+refuses to replace either file unless it begins with airules' generated-file
+comment; it checks selected destinations before writing any generated files.
+For a pre-existing human-maintained file, review/back up or import its rules first.
+Then `sync --target gemini --force` (or `--target qwen`) explicitly replaces that
+selected context file and marks it as managed. `init --force --target <tool>`
+replaces both the active airules config and the selected context file. Subsequent
+syncs replace managed files, including manual edits: keep lasting rules in the
+config. Removing the generated-file comment protects the file from normal sync.
+
+Every `--dry-run` leaves files unchanged, including with `--force`. Sync dry-run
+previews the generated changes for an unowned file and warns that real sync needs
+`--force`; `status`/`check` can report its drift without adopting or overwriting it.
+Generation, checks, and import reject symlinks, hardlinks, and non-file context
+paths, even with `--force`. Use standalone regular files for these destinations.
+
+These exports target the tools' documented default filenames. Gemini allows
+custom names with `context.fileName` in its settings; airules does not read or
+rewrite either tool's settings or follow filename overrides. If you customized
+context loading, ensure your tool includes the generated default filename or
+integrate the generated file into your setup manually. Check the tool's memory
+view to verify loading. airules `check` validates file drift, not a running AI
+session. Legacy files remain yours to review, archive, or remove, especially if a
+custom loader still includes them.
 
 ## Adding New Tools
 

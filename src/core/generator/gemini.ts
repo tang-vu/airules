@@ -1,16 +1,20 @@
 import type { AirulesConfig } from "../config/schema.js";
 import type { ProjectProfile } from "../detector/types.js";
 import { BaseGenerator } from "./base.js";
+import { CONTEXT_FILE_MARKER } from "./context-file.js";
 
 export class GeminiGenerator extends BaseGenerator {
   readonly toolName = "gemini";
-  readonly outputPath = ".gemini/rules.md";
+  readonly outputPath = "GEMINI.md";
   readonly description = "Google Gemini CLI project rules";
 
-  generate(profile: ProjectProfile, config: AirulesConfig): string {
-    const lines: string[] = [];
+  generate(_profile: ProjectProfile, config: AirulesConfig): string {
+    const lines: string[] = [CONTEXT_FILE_MARKER, ""];
     lines.push(`# Gemini Rules for ${config.project.name}`);
-    lines.push(`Stack: ${profile.framework ?? "generic"} (${profile.language})`);
+    // The config is authoritative, so init, sync, status, and check agree.
+    lines.push(
+      `Stack: ${config.project.stack || "generic"} (${config.project.language || "other"})`,
+    );
     lines.push("");
     lines.push("## Code Style");
     lines.push(`- Use ${config.rules.style.naming_convention} naming`);

@@ -23,8 +23,8 @@ targets:
   - cline         # .clinerules
   - codex         # AGENTS.md
   - aider         # AIDER.md (load with aider --read AIDER.md)
-  - qwen          # .qwenrules
-  - gemini        # .gemini/rules.md
+  - qwen          # QWEN.md
+  - gemini        # GEMINI.md
   - augment       # .augment/rules.md
   - codebuddy     # .codebuddy/rules.md
   - opencode      # AGENTS.md

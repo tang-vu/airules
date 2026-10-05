@@ -85,6 +85,11 @@ export async function initCommand(options: InitOptions): Promise<void> {
       info("Load conventions in Aider with `aider --read AIDER.md`.");
       info("Add aider to .airules.yml targets to include it in future syncs and checks.");
     }
+    for (const target of ["gemini", "qwen"]) {
+      if (targets.includes(target)) {
+        info(`Add ${target} to .airules.yml targets to include it in future syncs and checks.`);
+      }
+    }
     console.log("");
 
     if (options.dryRun) {

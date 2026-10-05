@@ -10,6 +10,7 @@ import { ClaudeGenerator } from "./claude.js";
 import { ClineGenerator } from "./cline.js";
 import { CodebuddyGenerator } from "./codebuddy.js";
 import { CodexGenerator } from "./codex.js";
+import { assertContextFileSafe, isContextTool, isManagedContextFile } from "./context-file.js";
 import { CopilotGenerator } from "./copilot.js";
 import { CursorGenerator } from "./cursor.js";
 import { GeminiGenerator } from "./gemini.js";
@@ -53,6 +54,7 @@ export function generateAll(
 ): GeneratedFile[] {
   const tools = targetTool ? [targetTool] : (config.targets ?? ["claude", "cursor", "copilot"]);
   const results: GeneratedFile[] = [];
+  const plannedContents = new Map<string, string>();
 
   for (const tool of tools) {
     const factory = generatorMap[tool];
@@ -64,19 +66,32 @@ export function generateAll(
 
     // Aider configuration can contain credentials. Do not access it through an output alias.
     if (tool === "aider") assertAiderFileSafe(outputPath);
+    if (isContextTool(tool)) assertContextFileSafe(cwd, generator.outputPath);
 
-    if (!force && existsSync(outputPath)) {
-      const existing = readFileSync(outputPath, "utf-8");
+    if (!force && (plannedContents.has(outputPath) || existsSync(outputPath))) {
+      // Some targets share a path (Codex/OpenCode). Compare with earlier planned writes,
+      // just as the original ordered writer compared with the bytes it had already saved.
+      const existing = plannedContents.get(outputPath) ?? readFileSync(outputPath, "utf-8");
       if (existing === content) continue;
-    }
-
-    if (!dryRun) {
-      const dir = dirname(outputPath);
-      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-      writeFileSync(outputPath, content, "utf-8");
+      if (!dryRun && isContextTool(tool) && !isManagedContextFile(existing)) {
+        throw new Error(
+          `Preserved existing ${generator.outputPath}: not managed by airules. Review or import its rules first, then use sync --target ${tool} --force to replace it.`,
+        );
+      }
     }
 
     results.push({ tool, path: generator.outputPath, content });
+    plannedContents.set(outputPath, content);
+  }
+
+  // Preflight every selected destination before writing any of the generated files.
+  if (!dryRun) {
+    for (const result of results) {
+      const outputPath = join(cwd, result.path);
+      const dir = dirname(outputPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(outputPath, result.content, "utf-8");
+    }
   }
 
   return results;

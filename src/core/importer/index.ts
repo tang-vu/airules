@@ -1,6 +1,11 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { assertAiderFileSafe } from "../generator/aider.js";
+import {
+  CONTEXT_FILE_MARKER,
+  assertContextFileSafe,
+  isContextTool,
+} from "../generator/context-file.js";
 
 export interface ImportSource {
   tool: string;
@@ -22,11 +27,16 @@ const IMPORTABLE_FILES = [
   { tool: "cline", file: ".clinerules" },
   { tool: "codex", file: "AGENTS.md" },
   { tool: "aider", file: "AIDER.md" },
+  { tool: "gemini", file: "GEMINI.md" },
+  { tool: "qwen", file: "QWEN.md" },
+  // Read legacy exports for migration, but never write or delete them.
+  { tool: "gemini", file: ".gemini/rules.md" },
+  { tool: "qwen", file: ".qwenrules" },
 ];
 
 function isRuleLine(line: string): boolean {
   const trimmed = line.trim();
-  if (!trimmed) return false;
+  if (!trimmed || trimmed === CONTEXT_FILE_MARKER) return false;
   // Skip markdown headers that are structural (not rules)
   if (trimmed.startsWith("#") && trimmed.length < 40) return false;
   // Skip empty lines, pure code blocks
@@ -52,6 +62,7 @@ export function findExistingConfigs(cwd: string): ImportSource[] {
   for (const { tool, file } of IMPORTABLE_FILES) {
     const fullPath = join(cwd, file);
     if (tool === "aider") assertAiderFileSafe(fullPath);
+    if (isContextTool(tool)) assertContextFileSafe(cwd, file);
     if (existsSync(fullPath)) {
       const content = readFileSync(fullPath, "utf-8");
       sources.push({ tool, file, content });

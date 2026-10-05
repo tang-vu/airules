@@ -4,6 +4,7 @@ import { join } from "node:path";
 import chalk from "chalk";
 import { loadConfig } from "../../core/config/loader.js";
 import { detectProject } from "../../core/detector/index.js";
+import { isContextTool, isManagedContextFile } from "../../core/generator/context-file.js";
 import { generateAll } from "../../core/generator/index.js";
 import { error, heading, info, success, warn } from "../ui/logger.js";
 import { createSpinner } from "../ui/spinner.js";
@@ -88,6 +89,18 @@ async function runSync(options: SyncOptions): Promise<void> {
     info("Updated files:");
     for (const result of results) {
       console.log(`  ${chalk.green("✔")} ${result.path} (${result.tool})`);
+      const outputPath = join(process.cwd(), result.path);
+      if (
+        options.dryRun &&
+        !options.force &&
+        isContextTool(result.tool) &&
+        existsSync(outputPath) &&
+        !isManagedContextFile(readFileSync(outputPath, "utf-8"))
+      ) {
+        warn(
+          `${result.path} is not managed by airules. A real sync will preserve it unless you use --force.`,
+        );
+      }
     }
     const targets = options.target ? [options.target] : config.targets;
     if (targets.includes("aider")) {
